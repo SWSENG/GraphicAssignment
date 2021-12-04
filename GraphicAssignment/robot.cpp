@@ -6,6 +6,11 @@
 #define WINDOW_TITLE "Robot"
 #define PI 3.142
 
+float radius = 1.0f;
+float angle = 0.01f;
+int slices = 20, stacks = 20;
+float boneLength = 1.0f;
+
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -57,12 +62,13 @@ bool initPixelFormat(HDC hdc)
 }
 //--------------------------------------------------------------------
 
-void drawLinePyramid() 
-{
+void spinalCord(GLUquadricObj* var);
+
+void drawLinePyramid() {
 	glBegin(GL_LINE_LOOP);
 	{
 		// Bottom Face 
-		glColor3f(1.0f, 1.0f, 1.0f);
+		glColor3f(1.0f, 1.0f, 0.0f);
 		glVertex3f(-1.0f, -1.0f, 1.0f);
 		glVertex3f(1.0f, -1.0f, 1.0f);
 		glVertex3f(1.0f, -1.0f, -1.0f);
@@ -82,11 +88,106 @@ void drawLinePyramid()
 	glEnd();
 }
 
+void drawJoint(GLUquadricObj* var) {
+	glPushMatrix();
+	{
+		gluSphere(var, radius / 25.0f, slices, stacks);
+	}
+	glPopMatrix();
+}
+
+void drawBone(GLUquadricObj* var) {
+	glPushMatrix();
+	{
+		gluQuadricDrawStyle(var, GLU_LINE);
+		gluCylinder(var, 0.03, 0.03, boneLength, 10, 30);
+	}
+	glPopMatrix();
+}
+
+void spinalCord(GLUquadricObj* var)
+{
+	glPushMatrix();
+	{//headjoint
+		glTranslatef(0, 0.72, 0);
+		drawJoint(var);
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{//leftarmjoint
+		glTranslatef(-0.25, 0.5, 0);
+		drawJoint(var);
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{//shoulderbone
+		glTranslatef(-0.25, 0.5, 0);
+		glRotatef(90, 0, 1, 0);
+		boneLength = 0.5;
+		drawBone(var);
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{//rightarmjoint
+		glTranslatef(0.25, 0.5, 0);
+		drawJoint(var);
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{//spinalCordbone
+		glTranslatef(0, 0.7, 0);
+		glRotatef(90, 1, 0, 0);
+		boneLength = 0.5;
+		drawBone(var);
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{//waistjoint
+		glTranslatef(0, 0.20, 0);
+		drawJoint(var);
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{//belowwaistbone
+		glTranslatef(0, 0.18, 0);
+		glRotatef(90, 1, 0, 0);
+		boneLength = 0.25;
+		drawBone(var);
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{//kkb
+		glScalef(0.03, 0.03, 0.03);
+		glRotatef(180, 1, 0, 0);
+		glTranslatef(0, 3, 0);
+		drawLinePyramid();
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{//rightlegjoint
+		glTranslatef(0.07, 0, 0);
+		drawJoint(var);
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{//leftlegjoint
+		glTranslatef(-0.07, 0, 0);
+		drawJoint(var);
+	}
+	glPopMatrix();
+}
+
 void display()
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
+
+	GLUquadricObj* var = NULL;
+	var = gluNewQuadric();
+
+	spinalCord(var);
+	gluDeleteQuadric(var);
 }
 //--------------------------------------------------------------------
 
