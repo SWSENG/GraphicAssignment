@@ -148,6 +148,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
 	UnregisterClass(WINDOW_TITLE, wc.hInstance);
 
+	//hello
+
+
 	return true;
 }
 //--------------------------------------------------------------------
