@@ -144,6 +144,11 @@
   <ItemGroup>
     <ClCompile Include="robot.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="blackMetal.bmp" />
+    <Image Include="greyMetal.bmp" />
+    <Image Include="steel.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
